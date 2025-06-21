@@ -6,12 +6,14 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [ScheduleItem::class, TaskItem::class],  // Tambahkan TaskItem di sini
-    version = 3
+    entities = [ScheduleItem::class, TaskItem::class, NoteItem::class],
+    version = 4 // ← Jangan lupa update versinya kalau sebelumnya 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun scheduleDao(): ScheduleDao
-    abstract fun taskDao(): TaskDao  // Tambahkan ini
+    abstract fun taskDao(): TaskDao
+    abstract fun noteDao(): NoteDao
+
 
     companion object {
         @Volatile private var INSTANCE: AppDatabase? = null

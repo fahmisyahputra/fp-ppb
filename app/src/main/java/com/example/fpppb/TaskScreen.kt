@@ -70,7 +70,7 @@ fun TaskScreen(viewModel: TaskViewModel = viewModel()) {
 
         Text(
             text = if (isEditing) "Edit Tugas" else "Tambah Tugas",
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp),
+            style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 16.dp)
         )
 

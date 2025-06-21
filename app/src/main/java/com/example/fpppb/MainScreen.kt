@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.*
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
+
 
 @Composable
 fun MainScreen() {
@@ -17,7 +19,8 @@ fun MainScreen() {
     val items = listOf(
         BottomNavItem("Jadwal", "schedule", Icons.Default.DateRange),
         BottomNavItem("Tugas", "task", Icons.Default.List),
-        BottomNavItem("Profil", "profile", Icons.Default.Person)
+        BottomNavItem("Catatan", "notes", Icons.Default.Edit), // ← Tambahkan ini
+        BottomNavItem("Profil", "profile", Icons.Default.Person),
     )
 
     Scaffold(
@@ -54,6 +57,7 @@ fun MainScreen() {
         ) {
             composable("schedule") { ScheduleScreen() }
             composable("task") { TaskScreen() }
+            composable("notes") { NotesScreen() } // ← Tambahkan ini
             composable("profile") { ProfileScreen() }
         }
     }
