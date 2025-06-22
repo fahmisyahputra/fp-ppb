@@ -1,26 +1,30 @@
 package com.example.fpppb
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.compose.*
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.navigation.compose.*
 
 
 @Composable
 fun MainScreen() {
     val navController = rememberNavController()
+
     val items = listOf(
-        BottomNavItem("Jadwal", "schedule", Icons.Default.DateRange),
-        BottomNavItem("Tugas", "task", Icons.Default.List),
-        BottomNavItem("Catatan", "notes", Icons.Default.Edit), // ← Tambahkan ini
-        BottomNavItem("Profil", "profile", Icons.Default.Person),
+        NavScreen.Home,
+        NavScreen.Schedule,
+        NavScreen.Task,
+        NavScreen.Notes,
+        NavScreen.Profile
     )
 
     Scaffold(
@@ -29,7 +33,7 @@ fun MainScreen() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                items.forEach { item ->
+                items.forEach { item: BottomNavItem -> // ❗ Perjelas tipe data
                     NavigationBarItem(
                         icon = { Icon(item.icon, contentDescription = item.title) },
                         label = { Text(item.title) },
@@ -51,14 +55,16 @@ fun MainScreen() {
         }
     ) { innerPadding ->
         NavHost(
-            navController,
-            startDestination = "schedule",
+            navController = navController,
+            startDestination = NavScreen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("schedule") { ScheduleScreen() }
-            composable("task") { TaskScreen() }
-            composable("notes") { NotesScreen() } // ← Tambahkan ini
-            composable("profile") { ProfileScreen() }
+            composable(NavScreen.Home.route) { HomeScreen(navController) }
+            composable(NavScreen.Schedule.route) { ScheduleScreen() }
+            composable(NavScreen.Task.route) { TaskScreen() }
+            composable(NavScreen.Notes.route) { NotesScreen() }
+            composable(NavScreen.Profile.route) { ProfileScreen() }
         }
     }
 }
+
