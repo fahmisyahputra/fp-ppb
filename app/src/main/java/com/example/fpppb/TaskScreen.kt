@@ -3,22 +3,26 @@ package com.example.fpppb
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
-import androidx.compose.ui.Alignment
-import androidx.compose.foundation.shape.RoundedCornerShape
 
 @Composable
 fun TaskScreen(viewModel: TaskViewModel = viewModel()) {
@@ -63,112 +67,138 @@ fun TaskScreen(viewModel: TaskViewModel = viewModel()) {
     val activeTasks = taskList.filter { !it.isDone }.sortedBy { it.deadline }
     val doneTasks = taskList.filter { it.isDone }.sortedBy { it.deadline }
 
-    Column(modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize()
-        .verticalScroll(rememberScrollState())) {
-
-        Text(
-            text = if (isEditing) "Edit Tugas" else "Tambah Tugas",
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        OutlinedTextField(
-            value = title,
-            onValueChange = { title = it },
-            label = { Text("Nama Tugas") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp)
-        )
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        // ✅ Navbar atas (logo dan menu)
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(bottom = 12.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Deadline: $deadlineText", modifier = Modifier.weight(1f))
-            Button(
-                onClick = { showDatePicker = true },
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.height(40.dp)
+            Image(
+                painter = painterResource(id = R.drawable.logo_horizontal),
+                contentDescription = "Logo",
+                modifier = Modifier.size(130.dp)
+            )
+            IconButton(onClick = { /* Drawer opsional */ }) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Menu"
+                )
+            }
+        }
+
+        // ✅ Konten utama tugas
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            Text(
+                text = if (isEditing) "Edit Tugas" else "Tambah Tugas",
+                style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            OutlinedTextField(
+                value = title,
+                onValueChange = { title = it },
+                label = { Text("Nama Tugas") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(bottom = 12.dp)
             ) {
-                Text("Pilih Tanggal & Waktu")
-            }
-        }
-
-        OutlinedTextField(
-            value = notes,
-            onValueChange = { notes = it },
-            label = { Text("Catatan (opsional)") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 16.dp)
-        )
-
-        Button(
-            onClick = {
-                if (title.isNotBlank()) {
-                    if (isEditing && editingTaskId != null) {
-                        viewModel.update(TaskItem(editingTaskId!!, title, notes, deadlineMillis.value, false))
-                        isEditing = false
-                        editingTaskId = null
-                    } else {
-                        viewModel.add(title, notes, deadlineMillis.value)
-                    }
-                    title = ""
-                    notes = ""
+                Text("Deadline: $deadlineText", modifier = Modifier.weight(1f))
+                Button(
+                    onClick = { showDatePicker = true },
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.height(40.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF448AFF))
+                ) {
+                    Text("Pilih Tanggal & Waktu")
                 }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            Text(if (isEditing) "Simpan Perubahan" else "Tambah Tugas", fontWeight = FontWeight.Bold)
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        if (activeTasks.isNotEmpty()) {
-            Text(
-                "Tugas Aktif",
-                style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp),
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            activeTasks.forEach { task ->
-                TaskCard(
-                    task = task,
-                    dateFormat = dateFormat,
-                    onDelete = { viewModel.delete(task) },
-                    onEdit = {
-                        title = task.title
-                        notes = task.notes
-                        deadlineMillis.value = task.deadline
-                        isEditing = true
-                        editingTaskId = task.id
-                    },
-                    onToggleDone = { viewModel.update(task.copy(isDone = true)) }
-                )
             }
-        }
 
-        if (doneTasks.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                "Tugas Selesai",
-                style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp),
-                modifier = Modifier.padding(bottom = 8.dp)
+            OutlinedTextField(
+                value = notes,
+                onValueChange = { notes = it },
+                label = { Text("Catatan (opsional)") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
             )
-            doneTasks.forEach { task ->
-                TaskCard(
-                    task = task,
-                    dateFormat = dateFormat,
-                    onDelete = { viewModel.delete(task) },
-                    onEdit = {},
-                    onToggleDone = { viewModel.update(task.copy(isDone = false)) },
-                    isDoneCard = true
+
+            Button(
+                onClick = {
+                    if (title.isNotBlank()) {
+                        if (isEditing && editingTaskId != null) {
+                            viewModel.update(TaskItem(editingTaskId!!, title, notes, deadlineMillis.value, false))
+                            isEditing = false
+                            editingTaskId = null
+                        } else {
+                            viewModel.add(title, notes, deadlineMillis.value)
+                        }
+                        title = ""
+                        notes = ""
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF448AFF))
+            ) {
+                Text(if (isEditing) "Simpan Perubahan" else "Tambah Tugas", fontWeight = FontWeight.Bold)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (activeTasks.isNotEmpty()) {
+                Text(
+                    "Tugas Aktif",
+                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp),
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
+                activeTasks.forEach { task ->
+                    TaskCard(
+                        task = task,
+                        dateFormat = dateFormat,
+                        onDelete = { viewModel.delete(task) },
+                        onEdit = {
+                            title = task.title
+                            notes = task.notes
+                            deadlineMillis.value = task.deadline
+                            isEditing = true
+                            editingTaskId = task.id
+                        },
+                        onToggleDone = { viewModel.update(task.copy(isDone = true)) }
+                    )
+                }
+            }
+
+            if (doneTasks.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    "Tugas Selesai",
+                    style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp),
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                doneTasks.forEach { task ->
+                    TaskCard(
+                        task = task,
+                        dateFormat = dateFormat,
+                        onDelete = { viewModel.delete(task) },
+                        onEdit = {},
+                        onToggleDone = { viewModel.update(task.copy(isDone = false)) },
+                        isDoneCard = true
+                    )
+                }
             }
         }
     }
@@ -224,3 +254,4 @@ fun TaskCard(
         }
     }
 }
+

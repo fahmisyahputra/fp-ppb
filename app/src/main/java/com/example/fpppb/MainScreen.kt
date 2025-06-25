@@ -5,14 +5,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.navigation.compose.*
 
 
 @Composable
@@ -20,11 +12,11 @@ fun MainScreen() {
     val navController = rememberNavController()
 
     val items = listOf(
-        NavScreen.Home,
-        NavScreen.Schedule,
-        NavScreen.Task,
-        NavScreen.Notes,
-        NavScreen.Profile
+        AppScreen.Home,
+        AppScreen.Schedule,
+        AppScreen.Task,
+        AppScreen.Notes,
+        AppScreen.Profile
     )
 
     Scaffold(
@@ -33,7 +25,7 @@ fun MainScreen() {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry?.destination?.route
 
-                items.forEach { item: BottomNavItem -> // ❗ Perjelas tipe data
+                items.forEach { item: ScreenItem ->
                     NavigationBarItem(
                         icon = { Icon(item.icon, contentDescription = item.title) },
                         label = { Text(item.title) },
@@ -56,15 +48,14 @@ fun MainScreen() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = NavScreen.Home.route,
+            startDestination = AppScreen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(NavScreen.Home.route) { HomeScreen(navController) }
-            composable(NavScreen.Schedule.route) { ScheduleScreen() }
-            composable(NavScreen.Task.route) { TaskScreen() }
-            composable(NavScreen.Notes.route) { NotesScreen() }
-            composable(NavScreen.Profile.route) { ProfileScreen() }
+            composable(AppScreen.Home.route) { HomeScreen(navController) }
+            composable(AppScreen.Schedule.route) { ScheduleScreen() }
+            composable(AppScreen.Task.route) { TaskScreen() }
+            composable(AppScreen.Notes.route) { NotesScreen() }
+            composable(AppScreen.Profile.route) { ProfileScreen() }
         }
     }
 }
-

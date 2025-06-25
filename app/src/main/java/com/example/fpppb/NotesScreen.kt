@@ -1,17 +1,24 @@
 package com.example.fpppb
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.layout.ContentScale
 
 @Composable
 fun NotesScreen(viewModel: NoteViewModel = viewModel()) {
@@ -20,10 +27,32 @@ fun NotesScreen(viewModel: NoteViewModel = viewModel()) {
     var content by remember { mutableStateOf("") }
     var editingNote by remember { mutableStateOf<NoteItem?>(null) }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_horizontal),
+                contentDescription = "Logo",
+                modifier = Modifier.size(130.dp)
+            )
+
+            IconButton(onClick = { /* drawer */ }) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Menu"
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = if (editingNote != null) "Edit Catatan" else "Tambah Catatan",
             style = MaterialTheme.typography.titleLarge.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
@@ -45,7 +74,7 @@ fun NotesScreen(viewModel: NoteViewModel = viewModel()) {
             label = { Text("Isi Catatan") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(160.dp), // 👈 panjang textarea
+                .height(160.dp),
             singleLine = false,
             maxLines = 8
         )
@@ -68,7 +97,8 @@ fun NotesScreen(viewModel: NoteViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            shape = RoundedCornerShape(24.dp)
+            shape = RoundedCornerShape(24.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF448AFF))
         ) {
             Text(if (editingNote != null) "Update Catatan" else "Tambah Catatan", fontWeight = FontWeight.Bold)
         }

@@ -1,24 +1,26 @@
 package com.example.fpppb
 
 import android.app.TimePickerDialog
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.foundation.shape.RoundedCornerShape
 import java.util.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-
 
 @Composable
 fun ScheduleScreen(viewModel: ScheduleViewModel = viewModel()) {
@@ -38,10 +40,32 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = viewModel()) {
     var editingItem by remember { mutableStateOf<ScheduleItem?>(null) }
     val schedules by viewModel.scheduleList.collectAsState()
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+
+        // ✅ Header Bar (seperti Home)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.logo_horizontal),
+                contentDescription = "Logo",
+                modifier = Modifier.size(130.dp)
+            )
+
+            IconButton(onClick = { /* drawer menu */ }) {
+                Icon(Icons.Default.Menu, contentDescription = "Menu")
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             if (editingItem == null) "Tambah Jadwal" else "Edit Jadwal",
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 22.sp)
         )
 
         OutlinedTextField(
@@ -53,7 +77,9 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = viewModel()) {
                 .padding(vertical = 4.dp)
         )
 
-        Box(modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)) {
             OutlinedTextField(
                 value = selectedDay,
                 onValueChange = {},
@@ -90,7 +116,11 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = viewModel()) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text("Jam: $timeText", style = MaterialTheme.typography.bodyLarge)
-            Button(onClick = { showTimePicker = true }) {
+            Button(
+                onClick = { showTimePicker = true },
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF448AFF)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
                 Text("Pilih Jam")
             }
         }
@@ -132,7 +162,9 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = viewModel()) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(vertical = 8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF448AFF)),
+            shape = RoundedCornerShape(16.dp)
         ) {
             Text(if (editingItem == null) "Tambah" else "Simpan Perubahan")
         }
@@ -166,10 +198,8 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = viewModel()) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 8.dp)
-                                .align(Alignment.End),
                         ) {
-                            Spacer(modifier = Modifier.weight(1f)) // untuk dorong tombol ke kanan
-
+                            Spacer(modifier = Modifier.weight(1f))
                             TextButton(onClick = {
                                 subject = item.subject
                                 selectedDay = item.day
@@ -178,7 +208,6 @@ fun ScheduleScreen(viewModel: ScheduleViewModel = viewModel()) {
                             }) {
                                 Text("Edit", color = Color(0xFF4A90E2))
                             }
-
                             TextButton(onClick = {
                                 viewModel.delete(item)
                             }) {

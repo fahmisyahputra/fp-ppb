@@ -93,7 +93,7 @@ fun LoginScreen(navController: NavController) {
             TextField(
                 value = username,
                 onValueChange = { username = it },
-                placeholder = { Text("Username") },
+                placeholder = { Text("Email/Username") },
                 singleLine = true,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -129,7 +129,7 @@ fun LoginScreen(navController: NavController) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
                     } else {
-                        Toast.makeText(context, "Username atau password salah", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Username/Email atau password salah", Toast.LENGTH_SHORT).show()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

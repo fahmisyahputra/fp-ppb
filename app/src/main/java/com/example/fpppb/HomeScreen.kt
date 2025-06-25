@@ -18,7 +18,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.layout.ContentScale
+
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -33,22 +36,13 @@ fun HomeScreen(navController: NavController) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_foreground), // Ganti dengan logo ClassMate kamu
-                    contentDescription = "Logo",
-                    modifier = Modifier.size(48.dp)
-                )
-                Text(
-                    text = "ClassMate",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            Image(
+                painter = painterResource(id = R.drawable.logo_horizontal),
+                contentDescription = "Logo",
+                modifier = Modifier.size(130.dp)
+            )
 
-            IconButton(onClick = {
-                // Handle drawer click if needed
-            }) {
+            IconButton(onClick = { /* Drawer */ }) {
                 Icon(
                     imageVector = Icons.Default.Menu,
                     contentDescription = "Menu"
@@ -56,20 +50,20 @@ fun HomeScreen(navController: NavController) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+//        Spacer(modifier = Modifier.height(16.dp))
 
-        // Header Image placeholder
-        Box(
+        // Placeholder image
+        Image(
+            painter = painterResource(id = R.drawable.banner_home),
+            contentDescription = "Banner",
+            contentScale = ContentScale.Crop, // ⬅️ agar gambar memenuhi area
             modifier = Modifier
                 .fillMaxWidth()
                 .height(160.dp)
                 .clip(RoundedCornerShape(12.dp))
-                .background(Color.LightGray)
-        ) {
-            // Gambar akan kamu ganti nanti
-        }
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(26.dp))
 
         Text(
             text = "Welcome to ClassMate!",
@@ -77,31 +71,30 @@ fun HomeScreen(navController: NavController) {
             fontWeight = FontWeight.Bold
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(26.dp))
 
         // Grid Buttons
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 HomeMenuButton("Jadwal", Color(0xFF448AFF), modifier = Modifier.weight(1f)) {
-                    navController.navigate(NavScreen.Schedule.route)
+                    navController.navigate(AppScreen.Schedule.route)
                 }
                 HomeMenuButton("Tugas", Color.White, Color.Black, modifier = Modifier.weight(1f)) {
-                    navController.navigate(NavScreen.Task.route)
+                    navController.navigate(AppScreen.Task.route)
                 }
             }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 HomeMenuButton("Catatan", Color(0xFF448AFF), modifier = Modifier.weight(1f)) {
-                    navController.navigate(NavScreen.Notes.route)
+                    navController.navigate(AppScreen.Notes.route)
                 }
                 HomeMenuButton("Profil", Color.White, Color.Black, modifier = Modifier.weight(1f)) {
-                    navController.navigate(NavScreen.Profile.route)
+                    navController.navigate(AppScreen.Profile.route)
                 }
             }
         }
@@ -118,12 +111,18 @@ fun HomeMenuButton(
 ) {
     Box(
         modifier = modifier
-            .height(100.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .height(130.dp) // ⬅️ Lebih tinggi
+            .clip(RoundedCornerShape(16.dp))
             .background(bgColor)
             .clickable { onClick() },
         contentAlignment = Alignment.Center
     ) {
-        Text(text = title, color = textColor, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+        Text(text = title, color = textColor, fontSize = 18.sp, fontWeight = FontWeight.Medium)
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(navController = rememberNavController())
 }
